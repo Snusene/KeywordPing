@@ -1,7 +1,7 @@
 /**
  * @name KeywordPing
  * @author Snues
- * @description Get Discord notifications when messages match your keywords. Uses native Discord notifications with click-to-jump support.
+ * @description Get notified when messages match your keywords. Uses the same notification system as @mentions.
  * @version 2.1.0
  * @source https://github.com/Snusene/KeywordPing
  * @updateUrl https://raw.githubusercontent.com/Snusene/KeywordPing/main/KeywordPing.plugin.js
