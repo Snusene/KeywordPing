@@ -2,7 +2,7 @@
  * @name KeywordPing
  * @author Snues
  * @description Get notified when messages match your keywords. Uses Discord's native notification system, so it looks and sounds just like a regular @mention.
- * @version 2.3.0
+ * @version 2.3.1
  * @source https://github.com/Snusene/KeywordPing
  * @updateUrl https://raw.githubusercontent.com/Snusene/KeywordPing/main/KeywordPing.plugin.js
  */
@@ -91,7 +91,7 @@ module.exports = class KeywordPing {
         const panel = document.createElement("div");
         panel.className = "kp-settings-panel";
 
-        panel.appendChild(this.createTextAreaSetting("Keywords", "One keyword per line. Supports regex: /pattern/flags<br>Filters: @userid:keyword, #channelid:keyword, serverid:keyword", this.settings.keywords.join("\n"), (val) => { this.settings.keywords = val.split("\n").filter(k => k.trim()); this.compileKeywords(); this.saveSettings(); }, true));
+        panel.appendChild(this.createTextAreaSetting("Keywords", "One keyword per line. Supports regex: /pattern/flags<br>Filters: @user:keyword, #channelid:keyword, serverid:keyword", this.settings.keywords.join("\n"), (val) => { this.settings.keywords = val.split("\n").filter(k => k.trim()); this.compileKeywords(); this.saveSettings(); }, true));
         panel.appendChild(this.createTextAreaSetting("Whitelisted Users", "One per line - username, display name, nickname, or user ID", this.settings.whitelistedUsers.join("\n"), (val) => { this.settings.whitelistedUsers = val.split("\n").filter(k => k.trim()); this.saveSettings(); }));
         panel.appendChild(this.createTextAreaSetting("Ignored Users", "One per line - username, display name, nickname, or user ID", this.settings.ignoredUsers.join("\n"), (val) => { this.settings.ignoredUsers = val.split("\n").filter(k => k.trim()); this.saveSettings(); }));
         return panel;
@@ -156,8 +156,12 @@ module.exports = class KeywordPing {
 
     isValidPattern(keyword) {
         let pattern = keyword;
-        const filterMatch = /^([@#]?)(\d+):(.+)$/.exec(keyword);
-        if (filterMatch) pattern = filterMatch[3];
+        const userFilterMatch = /^@([^:]+):(.+)$/.exec(keyword);
+        if (userFilterMatch) pattern = userFilterMatch[2];
+        else {
+            const idFilterMatch = /^(#?)(\d+):(.+)$/.exec(keyword);
+            if (idFilterMatch) pattern = idFilterMatch[3];
+        }
         const regexMatch = /^\/(.+)\/([gimsuy]*)$/.exec(pattern);
         if (regexMatch) {
             try { new RegExp(regexMatch[1], regexMatch[2]); return true; }
@@ -222,10 +226,16 @@ module.exports = class KeywordPing {
 
     parseKeyword(keyword) {
         let filter = null, pattern = keyword;
-        const filterMatch = /^([@#]?)(\d+):(.+)$/.exec(keyword);
-        if (filterMatch) {
-            filter = { type: filterMatch[1] || "guild", id: filterMatch[2] };
-            pattern = filterMatch[3];
+        const userFilterMatch = /^@([^:]+):(.+)$/.exec(keyword);
+        if (userFilterMatch) {
+            filter = { type: "@", id: userFilterMatch[1] };
+            pattern = userFilterMatch[2];
+        } else {
+            const idFilterMatch = /^(#?)(\d+):(.+)$/.exec(keyword);
+            if (idFilterMatch) {
+                filter = { type: idFilterMatch[1] || "guild", id: idFilterMatch[2] };
+                pattern = idFilterMatch[3];
+            }
         }
         try {
             const regexMatch = /^\/(.+)\/([gimsuy]*)$/.exec(pattern);
@@ -238,7 +248,10 @@ module.exports = class KeywordPing {
     }
 
     passesFilter(filter, message) {
-        if (filter.type === "@") return message.author.id === filter.id;
+        if (filter.type === "@") {
+            if (/^\d+$/.test(filter.id)) return message.author.id === filter.id;
+            return this.matchesUser([filter.id], message.author, message.guild_id);
+        }
         if (filter.type === "#") return message.channel_id === filter.id;
         return message.guild_id === filter.id;
     }

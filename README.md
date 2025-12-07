@@ -1,6 +1,8 @@
 # KeywordPing
 
-![KeywordPing](https://i.imgur.com/ZlPkawg.png)
+![KeywordPing](https://i.imgur.com/ZJ3jkSR.png)
+
+![Inbox](https://i.imgur.com/R2Rz9gw.png)
 
 Get notified when messages match your keywords. Uses Discord's native notification system, so it looks and sounds just like a regular @mention.
 
