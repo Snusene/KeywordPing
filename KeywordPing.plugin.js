@@ -2,7 +2,7 @@
  * @name KeywordPing
  * @author Snues
  * @description Get notified when messages match your keywords. Uses Discord's native notification system, so it looks and sounds just like a regular @mention.
- * @version 2.3.1
+ * @version 2.3.2
  * @source https://github.com/Snusene/KeywordPing
  * @updateUrl https://raw.githubusercontent.com/Snusene/KeywordPing/main/KeywordPing.plugin.js
  */
@@ -27,7 +27,7 @@ module.exports = class KeywordPing {
             .kp-settings-group { margin-bottom: 20px; }
             .kp-settings-group-title { color: var(--header-secondary); font-size: 12px; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; display: inline; margin-right: 6px; }
             .kp-settings-group-header { margin-bottom: 8px; }
-            .kp-textarea { width: 100%; min-height: 84px; background: var(--input-background); border: none; border-radius: 4px; padding: 10px; color: var(--text-normal); font-family: inherit; font-size: 14px; resize: vertical; box-sizing: border-box; scrollbar-width: thin; scrollbar-color: var(--scrollbar-thin-thumb) transparent; }
+            .kp-textarea { width: 100%; min-height: 84px; background: rgba(0,0,0,0.25); border: 1px solid rgba(0,0,0,0.2); border-radius: 4px; padding: 10px; color: var(--text-normal); font-family: inherit; font-size: 14px; resize: vertical; box-sizing: border-box; scrollbar-width: thin; scrollbar-color: var(--scrollbar-thin-thumb) transparent; }
             .kp-textarea::-webkit-scrollbar { width: 8px; }
             .kp-textarea::-webkit-scrollbar-track { background: transparent; }
             .kp-textarea::-webkit-scrollbar-thumb { background: var(--scrollbar-thin-thumb); border-radius: 4px; }
